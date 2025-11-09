@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dot Matrix Player</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="player-container">
+        <div class="album-art-container">
+            <img id="album-art" src="{{ songs[0].art_data if songs else '' }}" alt="Album Art">
+        </div>
+        <div class="track-info">
+            <h2 id="track-title">{{ songs[0].title if songs else 'No Track' }}</h2>
+            <p id="track-artist">{{ songs[0].artist if songs else 'Select a song' }}</p>
+        </div>
+        <audio id="audio-player" src="{{ songs[0].file_url if songs else '' }}"></audio>
+        <div class="controls">
+            <button id="prev-btn">PREV</button>
+            <button id="play-pause-btn">PLAY</button>
+            <button id="next-btn">NEXT</button>
+        </div>
+    </div>
+    <div class="playlist-container">
+        <h3>PLAYLIST</h3>
+        <ul id="playlist">
+            {% for song in songs %}
+            <li data-src="{{ song.file_url }}" data-art="{{ song.art_data }}" data-title="{{ song.title }}" data-artist="{{ song.artist }}">
+                <span>{{ song.title }}</span> - <span>{{ song.artist }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <script src="{{ url_for('static', filename='js/player.js') }}"></script>
+</body>
+</html>
