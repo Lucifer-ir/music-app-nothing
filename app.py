@@ -94,6 +94,8 @@ def index():
         processed_songs.append({
             "title": song.title,
             "artist": song.artist,
+            "song_id": song.id,
+            "owner_id": song.owner.id,
             "file_url": f"/music/{song.music_file}",
             "art_dot_matrix": dot_matrix_data,
             "original_art_url": f"/art/{song.art_file}"
@@ -178,6 +180,26 @@ def upload():
             return redirect(url_for('index'))
 
     return render_template('upload.html', dot_font_json=json.dumps(DOT_FONT))
+
+@app.route('/delete_song/<int:song_id>', methods=['POST'])
+@login_required
+def delete_song(song_id):
+    song = Song.query.get_or_404(song_id)
+    if song.owner != current_user:
+        return jsonify({'error': 'Permission denied'}), 403
+
+    try:
+        # Delete physical files
+        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], 'music', song.music_file))
+        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], 'album_art', song.art_file))
+
+        # Delete from database
+        db.session.delete(song)
+        db.session.commit()
+        return jsonify({'success': True})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/music/<filename>')
 def serve_music(filename):

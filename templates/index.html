@@ -8,12 +8,18 @@
             <ul id="playlist">
                 {% for song in songs %}
                 <li data-src="{{ song.file_url }}" 
+                    data-song-id="{{ song.song_id }}"
                     data-art-dot-matrix='{{ song.art_dot_matrix | tojson | safe }}'
                     data-art-original-url="{{ song.original_art_url }}" 
                     data-title="{{ song.title }}" 
                     data-artist="{{ song.artist }}">
-                    <span class="playlist-title">{{ song.title }}</span>
-                    <span class="playlist-artist">{{ song.artist }}</span>
+                    <div class="playlist-song-info">
+                        <span class="playlist-title">{{ song.title }}</span>
+                        <span class="playlist-artist">{{ song.artist }}</span>
+                    </div>
+                    {% if current_user.is_authenticated and current_user.id == song.owner_id %}
+                        <button class="delete-song-btn">DEL</button>
+                    {% endif %}
                 </li>
                 {% else %}
                 <li class="empty-playlist">No songs found. <a href="{{ url_for('upload') }}">Upload one?</a></li>
@@ -21,26 +27,41 @@
             </ul>
         </div>
 
-        <div class="player-container">
-            <div class="album-art-container">
-                <!-- This div will be filled with dots by JS -->
-                <div id="album-art-dots"></div>
-                <!-- This img is for the original art, initially hidden -->
-                <img id="album-art-original" src="{{ songs[0].original_art_url if songs else '' }}" alt="Original Album Art" style="display: none;">
+        <div class="player-and-dials-wrapper">
+            <div class="player-container">
+                <div class="album-art-container">
+                    <!-- This div will be filled with dots by JS -->
+                    <div id="album-art-dots"></div>
+                    <!-- This img is for the original art, initially hidden -->
+                    <img id="album-art-original" src="{{ songs[0].original_art_url if songs else '' }}" alt="Original Album Art" style="display: none;">
+                </div>
+                <div class="track-info">
+                    <h2 id="track-title">{{ songs[0].title if songs else 'No Track' }}</h2>
+                    <p id="track-artist">{{ songs[0].artist if songs else 'Select a song' }}</p>
+                </div>
+                <div class="waveform-container">
+                    <div class="waveform-progress"></div>
+                    <div class="waveform-bars"></div>
+                </div>
+                <audio id="audio-player" src="{{ songs[0].file_url if songs else '' }}"></audio>
+                <div class="controls">
+                    <button id="prev-btn">PREV</button>
+                    <button id="play-pause-btn" class="play-main-btn">PLAY</button>
+                    <button id="next-btn">NEXT</button>
+                </div>
+                <div class="extra-controls">
+                    <button id="shuffle-btn" class="extra-btn">SHUFFLE</button>
+                </div>
             </div>
-            <div class="track-info">
-                <h2 id="track-title">{{ songs[0].title if songs else 'No Track' }}</h2>
-                <p id="track-artist">{{ songs[0].artist if songs else 'Select a song' }}</p>
+
+            <div id="jog-wheel-container" class="jog-wheel-container">
+                <div id="jog-wheel-dots" class="jog-wheel-dots"></div>
+                <div id="jog-wheel-indicator" class="jog-wheel-indicator"></div>
             </div>
-            <div class="waveform-container">
-                <div class="waveform-progress"></div>
-                <div class="waveform-bars"></div>
-            </div>
-            <audio id="audio-player" src="{{ songs[0].file_url if songs else '' }}"></audio>
-            <div class="controls">
-                <button id="prev-btn">PREV</button>
-                <button id="play-pause-btn">PLAY</button>
-                <button id="next-btn">NEXT</button>
+
+            <div id="bass-wheel-container" class="jog-wheel-container">
+                <div id="bass-wheel-dots" class="jog-wheel-dots"></div>
+                <div id="bass-wheel-indicator" class="jog-wheel-indicator"></div>
             </div>
         </div>
     </div>
