@@ -13,7 +13,7 @@ SONGS = [
         "art": "music-1.webp"
     },
 ]
-def image_to_dots(image_path, dot_size=5, spacing=8):
+def image_to_dots(image_path, dot_size=3, spacing=4):
     try:
         img = Image.open(image_path).convert('L')
         width, height = img.size
@@ -48,11 +48,17 @@ def index():
             "title": song["title"],
             "artist": song["artist"],
             "file_url": f"/music/{song['file']}",
-            "art_data": img_data
+            "art_data": img_data,
+            "original_art_url": f"/art/{song['art']}"
         })
     return render_template('index.html', songs=processed_songs)
 @app.route('/music/<filename>')
 def serve_music(filename):
     return send_from_directory(os.path.join('static', 'music'), filename)
+
+@app.route('/art/<filename>')
+def serve_art(filename):
+    return send_from_directory(os.path.join('static', 'album_art'), filename)
+
 if __name__ == '__main__':
     app.run(debug=True)

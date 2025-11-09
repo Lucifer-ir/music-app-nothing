@@ -22,6 +22,7 @@ body {
     position: relative;
     background-color: #111;
     margin-bottom: 20px;
+    cursor: pointer;
 }
 #album-art {
     position: absolute;
@@ -40,6 +41,41 @@ body {
     font-size: 0.9em;
     color: #888;
     margin: 0 0 20px;
+}
+.waveform-container {
+    height: 50px;
+    width: 100%;
+    margin-bottom: 20px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.waveform-bars {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.waveform-bars div {
+    width: 3px;
+    background-color: white;
+    border-radius: 5px;
+}
+.waveform-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0; /* Updated by JS */
+    background-color: #ff0000;
+    z-index: 2;
+    mix-blend-mode: multiply; /* This makes the red layer only colorize the white bars underneath */
+    pointer-events: none; /* This allows clicks to pass through the progress layer */
 }
 .controls button {
     background: none;

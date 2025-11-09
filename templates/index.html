@@ -9,11 +9,19 @@
 <body>
     <div class="player-container">
         <div class="album-art-container">
-            <img id="album-art" src="{{ songs[0].art_data if songs else '' }}" alt="Album Art">
+            <img id="album-art" 
+                 src="{{ songs[0].art_data if songs else '' }}" 
+                 data-dotted="{{ songs[0].art_data if songs else '' }}"
+                 data-original="{{ songs[0].original_art_url if songs else '' }}"
+                 alt="Album Art">
         </div>
         <div class="track-info">
             <h2 id="track-title">{{ songs[0].title if songs else 'No Track' }}</h2>
             <p id="track-artist">{{ songs[0].artist if songs else 'Select a song' }}</p>
+        </div>
+        <div class="waveform-container">
+            <div class="waveform-progress"></div>
+            <div class="waveform-bars"></div>
         </div>
         <audio id="audio-player" src="{{ songs[0].file_url if songs else '' }}"></audio>
         <div class="controls">
@@ -26,7 +34,11 @@
         <h3>PLAYLIST</h3>
         <ul id="playlist">
             {% for song in songs %}
-            <li data-src="{{ song.file_url }}" data-art="{{ song.art_data }}" data-title="{{ song.title }}" data-artist="{{ song.artist }}">
+            <li data-src="{{ song.file_url }}" 
+                data-art-dotted="{{ song.art_data }}" 
+                data-art-original="{{ song.original_art_url }}" 
+                data-title="{{ song.title }}" 
+                data-artist="{{ song.artist }}">
                 <span>{{ song.title }}</span> - <span>{{ song.artist }}</span>
             </li>
             {% endfor %}
