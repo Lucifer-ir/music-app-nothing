@@ -1,49 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dot Matrix Player</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <div class="player-container">
-        <div class="album-art-container">
-            <img id="album-art" 
-                 src="{{ songs[0].art_data if songs else '' }}" 
-                 data-dotted="{{ songs[0].art_data if songs else '' }}"
-                 data-original="{{ songs[0].original_art_url if songs else '' }}"
-                 alt="Album Art">
+{% extends "layout.html" %}
+{% block title %}Player{% endblock %}
+{% block content %}
+    <div class="timer"></div>
+    <div class="main-wrapper">
+        <div class="playlist-container">
+            <h3>PLAYLIST</h3>
+            <ul id="playlist">
+                {% for song in songs %}
+                <li data-src="{{ song.file_url }}" 
+                    data-art-dot-matrix='{{ song.art_dot_matrix | tojson | safe }}'
+                    data-art-original-url="{{ song.original_art_url }}" 
+                    data-title="{{ song.title }}" 
+                    data-artist="{{ song.artist }}">
+                    <span class="playlist-title">{{ song.title }}</span>
+                    <span class="playlist-artist">{{ song.artist }}</span>
+                </li>
+                {% else %}
+                <li class="empty-playlist">No songs found. <a href="{{ url_for('upload') }}">Upload one?</a></li>
+                {% endfor %}
+            </ul>
         </div>
-        <div class="track-info">
-            <h2 id="track-title">{{ songs[0].title if songs else 'No Track' }}</h2>
-            <p id="track-artist">{{ songs[0].artist if songs else 'Select a song' }}</p>
-        </div>
-        <div class="waveform-container">
-            <div class="waveform-progress"></div>
-            <div class="waveform-bars"></div>
-        </div>
-        <audio id="audio-player" src="{{ songs[0].file_url if songs else '' }}"></audio>
-        <div class="controls">
-            <button id="prev-btn">PREV</button>
-            <button id="play-pause-btn">PLAY</button>
-            <button id="next-btn">NEXT</button>
+
+        <div class="player-container">
+            <div class="album-art-container">
+                <!-- This div will be filled with dots by JS -->
+                <div id="album-art-dots"></div>
+                <!-- This img is for the original art, initially hidden -->
+                <img id="album-art-original" src="{{ songs[0].original_art_url if songs else '' }}" alt="Original Album Art" style="display: none;">
+            </div>
+            <div class="track-info">
+                <h2 id="track-title">{{ songs[0].title if songs else 'No Track' }}</h2>
+                <p id="track-artist">{{ songs[0].artist if songs else 'Select a song' }}</p>
+            </div>
+            <div class="waveform-container">
+                <div class="waveform-progress"></div>
+                <div class="waveform-bars"></div>
+            </div>
+            <audio id="audio-player" src="{{ songs[0].file_url if songs else '' }}"></audio>
+            <div class="controls">
+                <button id="prev-btn">PREV</button>
+                <button id="play-pause-btn">PLAY</button>
+                <button id="next-btn">NEXT</button>
+            </div>
         </div>
     </div>
-    <div class="playlist-container">
-        <h3>PLAYLIST</h3>
-        <ul id="playlist">
-            {% for song in songs %}
-            <li data-src="{{ song.file_url }}" 
-                data-art-dotted="{{ song.art_data }}" 
-                data-art-original="{{ song.original_art_url }}" 
-                data-title="{{ song.title }}" 
-                data-artist="{{ song.artist }}">
-                <span>{{ song.title }}</span> - <span>{{ song.artist }}</span>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
-    <script src="{{ url_for('static', filename='js/player.js') }}"></script>
-</body>
-</html>
+<script src="{{ url_for('static', filename='js/player.js') }}"></script>
+{% endblock %}

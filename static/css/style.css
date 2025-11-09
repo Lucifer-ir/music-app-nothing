@@ -1,30 +1,103 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
+
+.main-nav {
+    position: fixed;
+    top: 30px;
+    left: 40px;
+    z-index: 20;
+}
+.main-nav a {
+    color: #888;
+    text-decoration: none;
+    font-family: 'Roboto Mono', monospace;
+    margin-right: 20px;
+    transition: color 0.2s;
+}
+.main-nav a:hover {
+    color: #fff;
+}
+.upload-btn {
+    background-color: #333;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
 body {
     background-color: #000000;
+    position: relative; /* Needed for absolute positioning of the timer */
     color: #ffffff;
     font-family: 'Roboto Mono', monospace;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
+}
+.content {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.main-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 60px; /* Space between sidebar and player */
 }
 .player-container {
     width: 350px;
     padding: 20px;
     border: 1px solid #333;
     text-align: center;
+    position: relative;
+}
+
+.timer {
+    position: fixed; /* Fixed position relative to the viewport */
+    top: 30px;
+    right: 40px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    height: 50px;
+    gap: 6px;
+}
+.timer .char-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns for font pattern */
+    gap: 2px;
+}
+.timer .dot {
+    width: 5px;
+    height: 5px;
+    background-color: #fff;
+    border-radius: 50%;
 }
 .album-art-container {
     width: 100%;
     padding-bottom: 100%;
     position: relative;
-    background-color: #111;
+    background-color: #000;
     margin-bottom: 20px;
     cursor: pointer;
 }
-#album-art {
+#album-art-dots {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+}
+#album-art-dots .dot {
+    width: 4px;
+    height: 4px;
+    background-color: #fff;
+    border-radius: 50%;
+    position: absolute;
+    transition: transform 0.2s ease-out; /* For smooth scaling */
+}
+#album-art-original {
     position: absolute;
     top: 0;
     left: 0;
@@ -60,6 +133,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    pointer-events: none; /* Allow clicks to pass through to the container */
 }
 .waveform-bars div {
     width: 3px;
@@ -92,20 +166,25 @@ body {
     color: #000000;
 }
 .playlist-container {
-    margin-top: 30px;
-    width: 350px;
+    width: 300px;
+    height: 400px; /* Fixed height for the sidebar */
+    padding: 20px;
+    border-right: 1px solid #333;
+    display: flex;
+    flex-direction: column;
 }
 .playlist-container h3 {
     text-align: center;
     font-size: 0.8em;
     color: #888;
     letter-spacing: 2px;
+    flex-shrink: 0; /* Prevent h3 from shrinking */
 }
 #playlist {
     list-style: none;
     padding: 0;
-    max-height: 150px;
     overflow-y: auto;
+    flex-grow: 1; /* Allow ul to take available space */
 }
 #playlist li {
     padding: 10px;
@@ -114,7 +193,58 @@ body {
     font-size: 0.9em;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+}
+.playlist-artist {
+    color: #888;
+    font-size: 0.9em;
 }
 #playlist li:hover, #playlist li.active {
     background-color: #222;
+}
+.empty-playlist, .empty-playlist a {
+    color: #888;
+    text-align: center;
+    justify-content: center;
+    cursor: default;
+}
+.empty-playlist a {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.auth-form {
+    width: 350px;
+    padding: 40px;
+    border: 1px solid #333;
+    text-align: center;
+}
+.auth-form h2 {
+    margin-bottom: 30px;
+}
+.auth-form input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    background: #111;
+    border: 1px solid #444;
+    color: #fff;
+    font-family: 'Roboto Mono', monospace;
+    box-sizing: border-box;
+}
+.auth-form button {
+    width: 100%;
+    background: #fff;
+    color: #000;
+    border: none;
+    padding: 12px;
+    font-family: 'Roboto Mono', monospace;
+    font-weight: bold;
+    cursor: pointer;
+}
+.auth-form label {
+    display: block;
+    text-align: left;
+    margin-bottom: 5px;
+    color: #888;
 }
